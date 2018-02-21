@@ -10,6 +10,14 @@ public class Artist {
         albums = new TreeMap<String, Album>();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Map<String, Album> getAlbums() {
+        return albums;
+    }
+
     public void addAlbum(TrackTags track) {
         if (!albums.containsKey(track.getAlbum())) {
             albums.put(track.getAlbum(), new Album(track.getAlbum()));

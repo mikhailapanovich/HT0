@@ -31,6 +31,16 @@ public class TrackTags {
             album = tag.getAlbum();
         }
 
+        if (artist == null) {
+            artist = "unknown artist";
+        }
+        if (title == null) {
+            title = "unknown title";
+        }
+        if (album == null) {
+            album = "unknown album";
+        }
+
         length = fileMp3.getLengthInSeconds();
         path = file.getAbsolutePath();
         md5 = new GetMD5ForFile(path).getMD5();

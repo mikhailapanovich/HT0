@@ -13,31 +13,27 @@ public class Album {
         tracks = new TreeMap<String, TrackTags>();
     }
 
-    public void addTrack(TrackTags track) {
-        // time for log4j!
-        if (tracks.containsKey(track.getTitle())) {
-
-        }
+    public String getName() {
+        return name;
     }
 
-    public static void example(String[] args) {
-        System.setProperty("log4j.configurationFile",
-                "src/main/resources/log4j2.xml");
+    public Map<String, TrackTags> getTracks() {
+        return tracks;
+    }
 
-        Logger logger = LogManager.getRootLogger();
-        logger.info("Information message");
-        logger.debug("Debug message");
-        logger.trace("Trace message");
-        logger.error("Error message");
-        logger.fatal("Fatal message");
-        logger.warn("Warning message");
-
-        Logger logger2 = LogManager.getLogger(CataloguerMP3.class);
-        logger2.info("2 Information message");
-        logger2.debug("2 Debug message");
-        logger2.trace("2 Trace message");
-        logger2.error("2 Error message");
-        logger2.fatal("2 Fatal message");
-        logger2.warn("2 Warning message");
+    public void addTrack(TrackTags track) {
+        // time for log4j!
+        Logger logger = LogManager.getLogger(CataloguerMP3.class);
+        String title = track.getTitle();
+        if (tracks.containsKey(title)) {
+            if (tracks.get(title).getMd5().equals(track.getMd5())) {     // checksum the same
+                logger.warn("has the same md5 " + track.getPath() + "\n" + tracks.get(title).getPath());
+            } else {        // artist album and name are the same
+                logger.info(track.getArtist() + " " + track.getAlbum() + " " + track.getTitle() +
+                        " are the same in " + track.getPath() + "\n" + tracks.get(title).getPath());
+            }
+        } else {
+            tracks.put(title, track);
+        }
     }
 }

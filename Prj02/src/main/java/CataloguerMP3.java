@@ -1,4 +1,7 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class CataloguerMP3 {
@@ -13,26 +16,57 @@ public class CataloguerMP3 {
         }
     }
 
-    private void addArtist(TrackTags track) {
-        if (!artists.containsKey(track.getArtist())) {
-            artists.put(track.getArtist(), new Artist(track.getArtist()));
-        }
-        artists.get(track.getArtist()).addAlbum(track);
-    }
-
     public static void main(String[] args) throws Exception {
-
         String path = "d:/music/noname";
+        String pathHTML = System.getProperty("user.dir") + "/src/main/resources/catalogue.html";
         File f = new File(path);
 
 
         List<File> files = searchDirectoryForMP3(f);
         CataloguerMP3 instance = new CataloguerMP3(files);
+        instance.createHTML(pathHTML);
     }
 
-    // sort all mp3 files to Artist Album Track
-    private void createCatalogue(List<File> files) {
+    private void createHTML(String path) {
+        BufferedWriter bw;
+        try {
+            bw = new BufferedWriter(new FileWriter(path));
 
+            bw.write("<html><style>\n" +
+                    "  h1 {\n" +
+                    "    margin:10px;\n" +
+                    "  }\n" +
+                    "  h2 {\n" +
+                    "    margin:20px;\n" +
+                    "  }\n" +
+                    "  h3 {\n" +
+                    "    margin:30px;\n" +
+                    "  }\n" +
+                    "</style>");
+
+            for (Artist artist : artists.values()) {
+                bw.write("<h1>" + artist.getName() + "</h1>");
+                for (Album album : artist.getAlbums().values()) {
+                    bw.write("<h2>" + album.getName() + "</h2>");
+                    for (TrackTags track : album.getTracks().values()) {
+                        bw.write("<h3><a href=\"" + track.getPath() + "\">" +
+                                track.getTitle() + " " + track.getLength() + " seconds </a></h3>");
+                    }
+                }
+            }
+
+            bw.write("/html>");
+            bw.close();
+        } catch (IOException e) {
+            System.out.println("Cannot make html file!");
+        }
+    }
+
+    private void addArtist(TrackTags track) {
+        if (!artists.containsKey(track.getArtist())) {
+            artists.put(track.getArtist(), new Artist(track.getArtist()));
+        }
+        artists.get(track.getArtist()).addAlbum(track);
     }
 
     // return all files with mp3 extension from directory and subdirectories recursively
